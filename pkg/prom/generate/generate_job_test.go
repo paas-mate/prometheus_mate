@@ -109,10 +109,12 @@ func TestConvKeepMetricsJob(t *testing.T) {
 }
 
 func TestConvJobFromEnv(t *testing.T) {
-	expectation := "  - job_name: \"PULSAR\"\n    static_configs:\n       - targets: [\"localhost:8080\"]\n"
+	expectation := "  - job_name: \"PULSAR\"\n    static_configs:\n       - targets: [\"localhost:8080\"]\n    metrics_path: custom_metrics\n"
 	err := os.Setenv("PULSAR_TYPE", "static")
 	assert.Nil(t, err)
 	err = os.Setenv("PULSAR_HOSTS", "localhost:8080")
+	assert.Nil(t, err)
+	err = os.Setenv("PULSAR_METRICS_PATH", "custom_metrics")
 	assert.Nil(t, err)
 	job := convJobFromEnv()
 	assert.Equal(t, expectation, job)
