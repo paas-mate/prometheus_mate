@@ -1,6 +1,6 @@
 module prometheus_mate
 
-go 1.18
+go 1.19
 
 require (
 	github.com/gogf/gf v1.16.9
