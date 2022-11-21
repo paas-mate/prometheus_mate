@@ -25,10 +25,10 @@ RUN go build -o prom_mate .
 
 FROM ttbb/prometheus:nake
 
-COPY pkg/config/gf.toml /opt/sh/prometheus/mate/config/gf.toml
+COPY pkg/config/gf.toml /opt/prometheus/mate/config/gf.toml
 
-COPY docker-build /opt/sh/prometheus/mate
+COPY docker-build /opt/prometheus/mate
 
-COPY --from=build /opt/pkg/prom_mate /opt/sh/prometheus/mate/prom_mate
+COPY --from=build /opt/pkg/prom_mate /opt/prometheus/mate/prom_mate
 
-CMD ["/usr/bin/dumb-init", "bash", "-vx", "/opt/sh/prometheus/mate/scripts/start.sh"]
+CMD ["/usr/bin/dumb-init", "bash", "-vx", "/opt/prometheus/mate/scripts/start.sh"]
