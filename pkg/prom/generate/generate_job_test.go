@@ -53,10 +53,11 @@ func TestConvFileJob(t *testing.T) {
 	jobReq.SdConfigs = sdConfigs
 	result := convJob(jobReq)
 	expect := `  - job_name: "file_job"
+    scheme: https
     tls_config:
-        ca_file: /tls/ca.pem
         cert_file: /tls/client.pem
         key_file: /tls/client-key.pem
+        insecure_skip_verify: true
     file_sd_configs:
       - files:
           - "file1"
@@ -118,4 +119,12 @@ func TestConvJobFromEnv(t *testing.T) {
 	assert.Nil(t, err)
 	job := convJobFromEnv()
 	assert.Equal(t, expectation, job)
+}
+
+func TestConvRuleFileFromEnv(t *testing.T) {
+	expectation := "rule_files:\n  - prome-rules.yaml\n"
+	err := os.Setenv("PROME_RULE_FILE", "prome-rules.yaml")
+	assert.Nil(t, err)
+	sb := convRuleFileFromEnv()
+	assert.Equal(t, expectation, sb)
 }
