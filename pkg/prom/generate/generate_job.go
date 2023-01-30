@@ -78,6 +78,7 @@ func ConvProm() string {
 		}
 		return nil
 	})
+	sb.WriteString(convRuleFileFromEnv())
 	return sb.String()
 }
 
@@ -133,15 +134,34 @@ func convJobFromEnvService(service string, env string, port int) string {
 	return convJob(singleSdJob.Conv2Req())
 }
 
+func convRuleFileFromEnv() string {
+	allEnv := os.Environ()
+	var sb strings.Builder
+	hasAddTitle := false
+	for _, env := range allEnv {
+		split := strings.Split(env, "=")
+		key := split[0]
+		if strings.HasSuffix(key, "_RULE_FILE") {
+			if !hasAddTitle {
+				hasAddTitle = true
+				sb.WriteString("rule_files:\n")
+			}
+			sb.WriteString("  - " + split[1] + "\n")
+		}
+	}
+	return sb.String()
+}
+
 func convJob(req model.CreateJobReq) string {
 	var sb strings.Builder
 	// write a job
 	sb.WriteString("  - job_name: \"" + req.Job + "\"\n")
 	if req.TlsConfig != nil {
+		sb.WriteString("    scheme: https\n")
 		sb.WriteString("    tls_config:\n")
-		sb.WriteString("        ca_file: " + path.PromCaPath + "\n")
 		sb.WriteString("        cert_file: " + path.PromCertPath + "\n")
 		sb.WriteString("        key_file: " + path.PromKeyPath + "\n")
+		sb.WriteString("        insecure_skip_verify: true\n")
 	}
 	sdConfigs := req.SdConfigs
 	if sdConfigs.SdType == constant.SdStatic {

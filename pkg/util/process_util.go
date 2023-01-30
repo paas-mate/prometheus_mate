@@ -31,12 +31,13 @@ func ProcessExists(processName string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	compile, err := regexp.Compile("[0-9]+")
+	if err != nil {
+		return false, err
+	}
 	for _, info := range fileInfos {
 		name := info.Name()
-		matched, err := regexp.MatchString("[0-9]+", name)
-		if err != nil {
-			return false, err
-		}
+		matched := compile.MatchString(name)
 		if !matched {
 			continue
 		}
